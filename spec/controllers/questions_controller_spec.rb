@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
   let(:question) { FactoryGirl.create(:question) }
+  let(:user) { FactoryGirl.create(:user) }
 
   describe "GET #index" do
     before { get :index }
@@ -30,7 +31,12 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe "GET #new" do
-    before { get :new }
+
+    before do
+      login(user)
+      get :new
+    end
+
 
     it 'creates new question' do
       expect(assigns(:question)).to be_a_new(Question)
@@ -43,7 +49,10 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe "GET #edit" do
-    before { get :edit, id: question }
+    before do
+      login(user)
+      get :edit, id: question
+    end
 
     it 'selects question for edit' do
       expect(assigns(:question)).to eq question
@@ -56,6 +65,9 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe "POST #create" do
+
+    before { login(user) }
+
     context "Valid" do
 
       it 'saves new question to the DB' do
@@ -87,7 +99,10 @@ RSpec.describe QuestionsController, type: :controller do
 
     context 'valid' do
 
-      before { patch :update, id: question, question: { title: 'new title', body: 'new body' } }
+      before do
+        login(user)
+        patch :update, id: question, question: { title: 'new title', body: 'new body' }
+      end
 
       it 'changes question in the DB' do
         question.reload
@@ -103,7 +118,10 @@ RSpec.describe QuestionsController, type: :controller do
 
     context 'invalid' do
 
-      before { patch :update, id: question, question: { title: nil, body: nil } }
+      before do
+        login(user)
+        patch :update, id: question, question: { title: nil, body: nil }
+      end
 
       it 'does not change question' do
         question.reload
@@ -120,7 +138,11 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    before { question }
+    before do
+      login(user)
+      question
+    end
+
 
     it 'deletes question from DB' do
       expect { delete :destroy, id: question }.to change(Question, :count).by(-1)
