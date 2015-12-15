@@ -1,1 +1,9 @@
+<h1>List of questions</h1>
+
+<% if @questions %>
+    <%= render @questions %>
+<% end %>
+
+
+
 <%= link_to 'Ask Question', new_question_path %>
