@@ -11,10 +11,7 @@ shall be able to create new question.
 
   scenario 'Authenticated user creates question' do
 
-    visit new_user_session_path
-    fill_in 'Email', with: user.email
-    fill_in  'Password', with: '12345678'
-    click_on 'Log in'
+    login(user)
 
     visit questions_path
     click_on 'Ask Question'

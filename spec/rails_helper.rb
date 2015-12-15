@@ -56,6 +56,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   config.include Devise::TestHelpers, type: :controller
   config.include ControllerHelpers, type: :controller
+  config.include AcceptanceHelpers, type: :feature
 
 end
 

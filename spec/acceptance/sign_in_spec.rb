@@ -8,10 +8,7 @@ feature 'Sign in', %q{
 
   scenario 'Existing user tries to sign in' do
 
-    visit new_user_session_path
-    fill_in 'Email', with: user.email
-    fill_in  'Password', with: '12345678'
-    click_on 'Log in'
+    login(user)
 
     expect(page).to have_content 'Signed in successfully'
     expect(page).to have_link 'Log out'
