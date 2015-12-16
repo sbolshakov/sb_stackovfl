@@ -1,20 +1,32 @@
 FactoryGirl.define do
 
-  sequence :title do |n|
+  sequence :question_title do |n|
 
     "My question #{n}"
 
   end
 
-  sequence :body do |n|
+  sequence :question_body do |n|
 
     "My question body #{n}"
 
   end
 
   factory :question do
-    title
-    body
+    title { generate(:question_title) }
+    body { generate(:question_body) }
+  end
+
+  trait :with_answers do
+
+    transient do
+      number_of_answers 3
+    end
+
+    after :create do |question, evaluator|
+      FactoryGirl.create_list :answer, evaluator.number_of_answers, question: question
+    end
+
   end
 
   factory :invalid_question, class: 'Question' do
