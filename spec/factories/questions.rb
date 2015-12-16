@@ -2,13 +2,13 @@ FactoryGirl.define do
 
   sequence :title do |n|
 
-    "My #{n} question"
+    "My question #{n}"
 
   end
 
   sequence :body do |n|
 
-    "My #{n} question body"
+    "My question body #{n}"
 
   end
 

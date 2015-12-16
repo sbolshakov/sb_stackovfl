@@ -1,3 +1,14 @@
 <h3><%= question.title %></h3>
 <h4><%= question.body %></h4>
 <hr />
+<% question.answers.each do |answer| %>
+
+    <h4><%= answer.body %></h4>
+    <hr />
+
+<% end %>
+
+
+<%= link_to 'Answer Question', new_question_answer_path(question) %>
+
+<hr />

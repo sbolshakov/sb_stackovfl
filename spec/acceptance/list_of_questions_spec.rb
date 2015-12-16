@@ -6,18 +6,16 @@ feature 'List of questions for any user', %q{
 
   scenario 'Any user can see list of existing questions' do
 
-    FactoryGirl.create_list(:question, 3)
+    questions = FactoryGirl.create_list(:question, 3)
     visit questions_path
-    for n in 1..3
-      expect(page).to have_content "My #{n} question"
-      expect(page).to have_content "My #{n} question body"
+    questions.each do |question|
+
+      expect(page).to have_content(question.title)
+      expect(page).to have_content(question.body)
+
     end
 
-
-
   end
-
-
 
 end
 
