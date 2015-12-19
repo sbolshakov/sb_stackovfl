@@ -138,21 +138,33 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    before do
-      login(user)
-      question
+    before { login(user) }
+
+    context 'Author deletes his own question' do
+
+      let!(:question) { FactoryGirl.create(:question, user: user) }
+
+      it 'deletes question from DB' do
+        expect { delete :destroy, id: question }.to change(Question, :count).by(-1)
+      end
+
+      it 'redirects to index' do
+        delete :destroy, id: question
+        expect(response).to redirect_to questions_path
+      end
+
     end
 
+    context 'Non-author fails to delete someone elses question' do
 
-    it 'deletes question from DB' do
-      expect { delete :destroy, id: question }.to change(Question, :count).by(-1)
+      before { question }
+
+      it 'Non-author tries to delete question from DB' do
+        expect { delete :destroy, id: question }.not_to change(Question, :count)
+      end
+
     end
 
-    it 'redirects to index' do
-      delete :destroy, id: question
-      expect(response).to redirect_to questions_path
-    end
   end
-
 
 end

@@ -15,6 +15,7 @@ FactoryGirl.define do
   factory :question do
     title { generate(:question_title) }
     body { generate(:question_body) }
+    user
   end
 
   trait :with_answers do
@@ -32,6 +33,7 @@ FactoryGirl.define do
   factory :invalid_question, class: 'Question' do
     title nil
     body nil
+    user nil
   end
 
 end
