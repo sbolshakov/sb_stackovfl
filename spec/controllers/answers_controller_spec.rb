@@ -59,4 +59,36 @@ RSpec.describe AnswersController, type: :controller do
 
   end
 
+  describe "DELETE #destroy" do
+    before { login(user) }
+
+    context 'Author deletes his own answer' do
+
+      let!(:question) { FactoryGirl.create(:question, user: user) }
+      let!(:answer) { FactoryGirl.create(:answer, question: question, user: user) }
+
+      it 'deletes answer from DB' do
+        expect { delete :destroy, id: answer }.to change(Answer, :count).by(-1)
+      end
+
+      it 'redirects to question show view' do
+        delete :destroy, id: answer
+        expect(response).to redirect_to question_path(question)
+      end
+
+    end
+
+    context 'Non-author fails to delete someone elses answer' do
+
+      let!(:question) { FactoryGirl.create(:question, user: user) }
+      let!(:answer) { FactoryGirl.create(:answer, question: question, user: user) }
+
+      it 'Non-author tries to delete answer from DB' do
+        expect { delete :destroy, id: answer }.not_to change(Question, :count)
+      end
+
+    end
+
+  end
+
 end

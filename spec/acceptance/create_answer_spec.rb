@@ -7,13 +7,12 @@ Any authenticated user can provide his answer for question.
 } do
 
   given!(:user) { FactoryGirl.create(:user) }
+  given(:question) { FactoryGirl.create(:question) }
 
   scenario 'Authenticated user creates answer to question' do
 
     login(user)
-
-    FactoryGirl.create(:question)
-    visit questions_path
+    visit question_path(question)
     click_on 'Answer Question'
     fill_in 'Answer', with: 'My clever answer text'
     click_on 'Submit Answer'
@@ -26,8 +25,7 @@ Any authenticated user can provide his answer for question.
 
   scenario 'Non-authenticated user tries to answer question' do
 
-    FactoryGirl.create(:question)
-    visit questions_path
+    visit question_path(question)
     click_on 'Answer Question'
 
     expect(page).to have_content 'You need to sign in or sign up before continuing.'

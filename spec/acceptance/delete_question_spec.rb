@@ -14,7 +14,7 @@ Author can delete his own question. Non-author and/or non-authenticated use cann
     login(user)
     visit question_path(question)
 
-    click_on 'Delete'
+    click_on 'Delete Question'
 
     expect(current_path).to eq questions_path
     expect(page).to_not have_content question.title
@@ -26,7 +26,7 @@ Author can delete his own question. Non-author and/or non-authenticated use cann
     login(FactoryGirl.create(:user))
     visit question_path(question)
 
-    expect(page).not_to have_link 'Delete'
+    expect(page).not_to have_link 'Delete Question'
 
   end
 
@@ -34,7 +34,7 @@ Author can delete his own question. Non-author and/or non-authenticated use cann
 
     visit question_path(question)
 
-    expect(page).not_to have_link 'Delete'
+    expect(page).not_to have_link 'Delete Question'
 
   end
 

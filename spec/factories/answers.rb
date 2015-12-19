@@ -8,10 +8,12 @@ FactoryGirl.define do
 
   factory :answer do
     body { generate(:answer_body) }
+    user
   end
 
   factory :invalid_answer, class: 'Answer' do
     body nil
+    user nil
   end
 
 
