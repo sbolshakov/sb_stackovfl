@@ -14,7 +14,6 @@ Author can delete his own answer. Non-author and/or non-authenticated use cannot
 
     login(user)
     visit question_path(question)
-    save_and_open_page
     click_on 'Delete Answer'
 
     expect(current_path).to eq question_path(question)

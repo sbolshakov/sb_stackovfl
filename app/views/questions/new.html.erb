@@ -1,9 +1,1 @@
-<%= form_for(@question) do |f| %>
-
-    <%= f.label :title, 'Question Title' %>
-    <%= f.text_field :title %>
-    <%= f.label :body, 'Question Text' %>
-    <%= f.text_area :body %>
-    <%= f.submit('Submit Question') %>
-
-<% end %>
+<%= render 'form' %>

@@ -1,6 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :load_question, only: [:show, :edit, :update, :destroy]
+  before_action :authorized, only: [:edit, :update, :destroy]
 
 
   def index
@@ -31,7 +32,7 @@ class QuestionsController < ApplicationController
 
   def update
     if @question.update(question_params)
-      redirect_to @question
+      redirect_to @question, notice: 'Your question was successfully updated!'
     else
       render :edit
     end
@@ -39,7 +40,7 @@ class QuestionsController < ApplicationController
 
   def destroy
 
-      @question.destroy if current_user.author_of?(@question)
+      @question.destroy
       redirect_to questions_path
 
   end
@@ -54,4 +55,9 @@ class QuestionsController < ApplicationController
     @question = Question.find(params[:id])
   end
 
+  def authorized
+    unless current_user.author_of?(@question)
+      redirect_to new_user_session_path
+    end
+  end
 end

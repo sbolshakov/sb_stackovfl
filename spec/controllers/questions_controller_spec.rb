@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
-  let(:question) { FactoryGirl.create(:question) }
   let(:user) { FactoryGirl.create(:user) }
+  let(:question) { FactoryGirl.create(:question, user: user) }
+
 
   describe "GET #index" do
     before { get :index }
@@ -97,7 +98,7 @@ RSpec.describe QuestionsController, type: :controller do
 
   describe "PATCH #update" do
 
-    context 'valid' do
+    context 'Author updates his question and it is valid' do
 
       before do
         login(user)
@@ -116,7 +117,7 @@ RSpec.describe QuestionsController, type: :controller do
 
     end
 
-    context 'invalid' do
+    context 'Author updates his question and it is invalid' do
 
       before do
         login(user)
@@ -135,14 +136,37 @@ RSpec.describe QuestionsController, type: :controller do
 
     end
 
+    context 'Non-author tries to updates question' do
+
+      before do
+        login(FactoryGirl.create(:user))
+        patch :update, id: question, question: { title: 'new title', body: 'new body' }
+      end
+
+      it 'does not change question' do
+        question.reload
+        expect(question.title).to include('My', 'question')
+        expect(question.body).to include('question', 'body')
+      end
+
+      it 'redirects to sign_in view' do
+        expect(response).to redirect_to new_user_session_path
+      end
+
+    end
+
   end
 
   describe "DELETE #destroy" do
-    before { login(user) }
 
     context 'Author deletes his own question' do
 
-      let!(:question) { FactoryGirl.create(:question, user: user) }
+      before do
+
+        login(user)
+        question
+
+      end
 
       it 'deletes question from DB' do
         expect { delete :destroy, id: question }.to change(Question, :count).by(-1)

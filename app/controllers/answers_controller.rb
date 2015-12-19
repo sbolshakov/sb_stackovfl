@@ -1,6 +1,7 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :load_answer, only: [:destroy]
+  before_action :load_answer, only: [:edit, :update, :destroy]
+  before_action :authorized, only: [:edit, :update, :destroy]
 
   def new
     @answer = Answer.new
@@ -18,12 +19,25 @@ class AnswersController < ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    if @answer.update(answer_params)
+      redirect_to @answer.question, notice: 'Your answer was successfully updated!'
+    else
+      render :edit
+    end
+  end
+
   def destroy
 
-    @answer.destroy if current_user.author_of?(@answer)
+    @answer.destroy
     redirect_to question_path(@answer.question)
 
   end
+
+  private
 
   def answer_params
     params.require(:answer).permit(:body)
@@ -31,6 +45,12 @@ class AnswersController < ApplicationController
 
   def load_answer
     @answer = Answer.find(params[:id])
+  end
+
+  def authorized
+    unless current_user.author_of?(@answer)
+      redirect_to new_user_session_path
+    end
   end
 
 end

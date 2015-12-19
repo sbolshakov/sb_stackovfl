@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
-  let(:question) { FactoryGirl.create(:question) }
-  let(:answer) { FactoryGirl.create(:answer) }
-  let(:user) { FactoryGirl.create(:user) }
+  let!(:user) { FactoryGirl.create(:user) }
+  let!(:question) { FactoryGirl.create(:question, user: user) }
+  let(:answer) { FactoryGirl.create(:answer, question: question, user: user) }
 
   describe "GET #new" do
     before do
@@ -58,6 +58,66 @@ RSpec.describe AnswersController, type: :controller do
     end
 
   end
+
+  describe "PATCH #update" do
+
+    context 'Author updates his answer and it is valid' do
+
+      before do
+        login(user)
+        patch :update, id: answer, answer: { body: 'new body' }
+      end
+
+      it 'changes question in the DB' do
+        answer.reload
+        expect(answer.body).to eq 'new body'
+      end
+
+      it 'redirects to question show view' do
+        expect(response).to redirect_to question
+      end
+
+    end
+
+    context 'Author updates his question and it is invalid' do
+
+      before do
+        login(user)
+        patch :update, id: answer, answer: { body: nil }
+      end
+
+      it 'does not change question' do
+        answer.reload
+        expect(answer.body).to include('answer', 'body')
+      end
+
+      it 'renders "edit" view' do
+        expect(response).to render_template :edit
+      end
+
+    end
+
+    context 'Non-author tries to updates answer' do
+
+      before do
+        login(FactoryGirl.create(:user))
+        patch :update, id: answer, answer: { body: 'new body' }
+      end
+
+      it 'does not change question' do
+        answer.reload
+        expect(answer.body).to include('answer', 'body')
+      end
+
+      it 'redirects to sign_in view' do
+        expect(response).to redirect_to new_user_session_path
+      end
+
+    end
+
+  end
+
+
 
   describe "DELETE #destroy" do
     before { login(user) }
