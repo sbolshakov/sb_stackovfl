@@ -29,13 +29,13 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'saves new answer to the DB and link it to the question' do
         expect {
-          post :create, question_id: question, answer: FactoryGirl.attributes_for(:answer)
+          post :create, question_id: question, answer: FactoryGirl.attributes_for(:answer), format: :js
         }.to change(question.answers, :count).by(1)
       end
 
       it "redirects to questions list" do
-          post :create, question_id: question, answer: FactoryGirl.attributes_for(:answer)
-          expect(response).to redirect_to questions_path
+          post :create, question_id: question, answer: FactoryGirl.attributes_for(:answer), format: :js
+          expect(response).to render_template :create
       end
 
     end
@@ -45,13 +45,13 @@ RSpec.describe AnswersController, type: :controller do
       it 'does not save new answer to the DB' do
 
         expect {
-          post :create, question_id: question, answer: FactoryGirl.attributes_for(:invalid_answer)
+          post :create, question_id: question, answer: FactoryGirl.attributes_for(:invalid_answer), format: :js
         }.not_to change(Answer, :count)
 
       end
 
       it 'renders "new" view' do
-        post :create, question_id: question, answer: FactoryGirl.attributes_for(:invalid_answer)
+        post :create, question_id: question, answer: FactoryGirl.attributes_for(:invalid_answer), format: :js
         expect(response).to render_template :new
       end
 
@@ -128,12 +128,12 @@ RSpec.describe AnswersController, type: :controller do
       let!(:answer) { FactoryGirl.create(:answer, question: question, user: user) }
 
       it 'deletes answer from DB' do
-        expect { delete :destroy, id: answer }.to change(Answer, :count).by(-1)
+        expect { delete :destroy, id: answer, format: :js }.to change(Answer, :count).by(-1)
       end
 
       it 'redirects to question show view' do
-        delete :destroy, id: answer
-        expect(response).to redirect_to question_path(question)
+        delete :destroy, id: answer, format: :js
+        expect(response).to render_template 'answers/destroy'
       end
 
     end
@@ -144,7 +144,7 @@ RSpec.describe AnswersController, type: :controller do
       let!(:answer) { FactoryGirl.create(:answer, question: question, user: user) }
 
       it 'Non-author tries to delete answer from DB' do
-        expect { delete :destroy, id: answer }.not_to change(Question, :count)
+        expect { delete :destroy, id: answer, format: :js }.not_to change(Question, :count)
       end
 
     end

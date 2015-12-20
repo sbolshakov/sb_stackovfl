@@ -10,7 +10,7 @@ Author can delete his own answer. Non-author and/or non-authenticated use cannot
   given!(:question) { FactoryGirl.create( :question, user: user ) }
   given!(:answer) { FactoryGirl.create( :answer, question: question, user: user)}
 
-  scenario 'Author can delete his own answer' do
+  scenario 'Author can delete his own answer', js: true do
 
     login(user)
     visit question_path(question)

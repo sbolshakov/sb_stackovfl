@@ -13,7 +13,7 @@ class AnswersController < ApplicationController
     @answer = @question.answers.new(answer_params)
     @answer.user = current_user
     if @answer.save
-      redirect_to questions_path, notice: 'Your answer was successfully submitted!'
+#      redirect_to @answer.question, notice: 'Your answer was successfully submitted!'
     else
       render :new
     end
@@ -33,7 +33,7 @@ class AnswersController < ApplicationController
   def destroy
 
     @answer.destroy
-    redirect_to question_path(@answer.question)
+    # redirect_to question_path(@answer.question)
 
   end
 
